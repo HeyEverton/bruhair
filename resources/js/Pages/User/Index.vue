@@ -97,7 +97,6 @@ onMounted(() => {
                             required
                         /> -->
                     </VCol>
-
                 </VRow>
                 <VDataTableServer
                     :items-length="users.length"
@@ -110,11 +109,7 @@ onMounted(() => {
                     :items-per-page-options="itemsPerPageOptions"
                 >
                     <template #item.actions="{ item }">
-                        <GeneralButton
-                            button-text="Excluir"
-                            badge
-                            badgeContent="2"
-                        />
+                        <GeneralButton button-text="Excluir" icon="fa-trash" />
                     </template>
                 </VDataTableServer>
             </VCardText>

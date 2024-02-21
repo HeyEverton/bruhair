@@ -6,7 +6,17 @@ import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 import { mask } from 'vue-the-mask'
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import * as fas from '@fortawesome/free-solid-svg-icons';
 
+Object.keys(fas).forEach((iconName: any) => {
+    if (fas[iconName] !== 'fas') {
+        console.log(fas[iconName])
+
+        library.add(fas[iconName]);
+    }
+});
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
@@ -25,7 +35,7 @@ createInertiaApp({
             .use(plugin)
             .use(vuetify)
             .directive('mask', mask)
-
+            .component('font-awesome-icon', FontAwesomeIcon)
             .use(ZiggyVue)
             .mount(el);
     },
