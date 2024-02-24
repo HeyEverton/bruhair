@@ -1,6 +1,6 @@
 <template>
-    <font-awesome-icon icon="fas fa-star" />
-    <!-- <font-awesome-icon :icon="props.icon" /> -->
+
+     <font-awesome-icon :icon="`fas ${props.icon}`" />
 </template>
 
 <script setup lang="ts">

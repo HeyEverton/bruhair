@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import FontAwesomeIcon from "./FontAwesomeIcon.vue";
+
 interface Props {
     badge?: boolean;
     badgeContent?: number | string;
@@ -8,10 +9,11 @@ interface Props {
     size?: string;
     disabled?: boolean;
     loading?: boolean;
-    variant?: string;
+    variant?: "flat" | "text" | "elevated" | "tonal" | "outlined" | "plain";
     type?: string;
     buttonText?: string;
 }
+
 const props = defineProps<Props>();
 </script>
 <template>
@@ -26,9 +28,19 @@ const props = defineProps<Props>();
             {{ buttonText ?? "Clique" }}
         </VBtn>
     </VBadge>
-    <VBtn v-else v-bind="{ ...$attrs }">
-        <FontAwesomeIcon icon="fas fa-user" />
-        <!-- <i :icon="props.icon" /> -->
-        {{ buttonText ?? "Clique" }}
+    <VBtn
+        v-else
+        :color="props.color"
+        :disabled="props.disabled"
+        :loading="props.loading"
+        :size="props.size"
+        :variant="props.variant || 'flat'"
+    >
+        <FontAwesomeIcon
+            v-if="props.icon"
+            :icon="props.icon"
+            :class="props.icon && props.buttonText ? 'mr-2' : ''"
+        />
+        {{ buttonText ?? "" }}
     </VBtn>
 </template>
