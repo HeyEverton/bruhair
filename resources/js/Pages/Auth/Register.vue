@@ -6,13 +6,14 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import TextInput from "@/Components/TextInput.vue";
 import { Head, Link, useForm } from "@inertiajs/vue3";
 
+
 const form = useForm({
     name: "",
     email: "",
     password: "",
     password_confirmation: "",
     phone_number: "",
-    birth_date: "",
+    birthdate: "",
 });
 
 const submit = () => {
@@ -65,14 +66,11 @@ const submit = () => {
                     <TextInput
                         id="birth_date"
                         type="date"
-                        v-model="form.birth_date"
+                        v-model="form.birthdate"
                         class="appearance-none block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
                         max="2022-12-31"
                     />
-                    <InputError
-                        class="mt-2"
-                        :message="form.errors.birth_date"
-                    />
+                    <InputError class="mt-2" :message="form.errors.birthdate" />
                 </div>
 
                 <div class="w-full md:w-1/2 px-3">

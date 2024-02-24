@@ -26,7 +26,8 @@ import Chart from "./Dashboards/Chart.vue";
 
         <VCard>
             <VCardText>
-                <Chart title="2023" />
+                <h2>Aqui você terá dashboards incríveis para o controle da sua plataforma</h2>
+<!--                <Chart title="2023" />-->
             </VCardText>
         </VCard>
         <!--
