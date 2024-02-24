@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Http\Requests\Auth;
+namespace App\Http\Requests\Employee;
 
-use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Password;
 
-class RegisterRequest extends FormRequest
+class CreateEmployeeRequest extends FormRequest
 {
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -18,29 +17,27 @@ class RegisterRequest extends FormRequest
         return [
             'name' => [
                 'required',
-                'string',
-                'max:255'
             ],
             'email' => [
-                'required',
-                'string',
-                'lowercase',
-                'email',
-                'max:255',
-                'unique:' . User::class
+                'sometimes',
             ],
-            'password' => [
+            'phone_number' => [
                 'required',
-                'confirmed',
-                Password::defaults()
             ],
             'birthdate' => [
                 'sometimes',
             ],
-            'phone_number' => [
-                'sometimes',
+            'employee_code' => [
+                'required',
             ],
+        ];
+    }
 
+    public function messages(): array
+    {
+        return [
+            'phone_number.required' => 'O campo Telefone é obrigatório',
+            'employee_code.required' => 'O campo Código do funcionário é obrigatório'
         ];
     }
 }

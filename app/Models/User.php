@@ -28,6 +28,8 @@ class User extends Authenticatable
         'role',
         'phone_number',
         'birthdate',
+        'employee_code',
+        'last_visit',
     ];
 
     protected $appends = [
