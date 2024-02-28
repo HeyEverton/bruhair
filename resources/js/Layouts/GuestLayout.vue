@@ -6,11 +6,8 @@ import {Link} from '@inertiajs/vue3';
 <template>
     <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
         <div>
-            <Link href="/">
-
-
-                <img style="max-height: 90px" src="../assets/images/logo_bruhair_cor_preta_png.png" alt="Logotipo - Bruhair" srcset="">
-                <!--                <ApplicationLogo class="w-20 h-20 fill-current text-gray-500" />-->
+            <Link href="/login">
+                <ApplicationLogo class="w-20 h-20 fill-current text-gray-500"/>
             </Link>
         </div>
 
