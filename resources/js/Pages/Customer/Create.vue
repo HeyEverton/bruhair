@@ -1,35 +1,33 @@
 <script setup lang="ts">
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { VCardText } from "vuetify/lib/components/index.mjs";
+import {VCardText} from "vuetify/lib/components/index.mjs";
 import GeneralButton from "../../Components/GeneralButton.vue";
 import TextInput from "@/Components/TextInput.vue";
 import InputLabel from "@/Components/InputLabel.vue";
-import { useSweetAlert } from "@/composables/useSweetAlert";
-import { Head, useForm } from "@inertiajs/vue3";
+import {useSweetAlert} from "@/composables/useSweetAlert";
+import {Head, useForm} from "@inertiajs/vue3";
 import InputError from "@/Components/InputError.vue";
-import { IUser } from "../types/user-customer-employee";
-interface Props {
-    user: IUser;
-}
-
-const props = defineProps<Props>();
+import {ref} from "vue";
 
 const form = useForm({
-    name: props.user.name,
-    email: props.user.email,
-    phone_number: props.user.phone_number,
-    birthdate: props.user.birthdate,
-    employee_code: props.user.employee_code,
+    name: "",
+    email: "",
+    phone_number: "",
+    birthdate: "",
 });
 
-const { showAlert } = useSweetAlert();
+const {showAlert} = useSweetAlert();
+const loadingBtn = ref<boolean>(false)
 
-const edit = () => {
-    form.put(route("employee.edit", { id: props.user.id }), {
+const create = () => {
+    loadingBtn.value = true
+    form.post(route("customer.store"), {
         onSuccess: () => {
+            loadingBtn.value = false
+            form.reset();
             showAlert({
                 title: "Sucesso!",
-                text: "Funcionário Editado com sucesso",
+                text: "Cliente Cadastrado com sucesso",
                 icon: "success",
             });
         },
@@ -37,33 +35,39 @@ const edit = () => {
 };
 
 const reset = () => {
-    // form.reset();
+    form.reset();
 };
 </script>
 
 <template>
-    <Head title="Editar Funcionário " />
+    <Head title="Cadastrar "/>
 
     <AuthenticatedLayout>
         <template #header>
             <div class="d-flex justify-between align-center">
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                    Editar Funcionário
+                    Cadastrar Cliente
                 </h2>
 
                 <GeneralButton
                     color="primary"
                     icon="fa-arrow-rotate-left"
-                    @click="$inertia.get(route('users'))"
+                    @click="$inertia.get(route('customers'))"
                 />
             </div>
         </template>
 
         <VCardText>
-            <form @submit.prevent="edit">
+            <form @submit.prevent="create">
                 <div class="flex flex-wrap -mx-3 mb-6">
                     <div class="w-full md:w-1/2 px-3 mb-1 md:mb-0">
-                        <InputLabel for="name" value="Nome" />
+                        <!-- TODO: refactor in employee put the same required thing                         -->
+                        <div class="d-flex ">
+                            <InputLabel for="name" value="Nome"/>
+                            <span class="text-danger ml-1">
+                                *
+                            </span>
+                        </div>
 
                         <TextInput
                             id="name"
@@ -71,13 +75,13 @@ const reset = () => {
                             class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                             v-model="form.name"
                             required
-                            placeholder="Insira o nome do funcionário"
+                            placeholder="Insira o nome do cliente"
                         />
-                        <InputError class="mt-2" :message="form.errors.name" />
+                        <InputError class="mt-2" :message="form.errors.name"/>
                     </div>
 
                     <div class="w-full md:w-1/2 px-3">
-                        <InputLabel for="email" value="E-mail" />
+                        <InputLabel for="email" value="E-mail"/>
 
                         <TextInput
                             id="email"
@@ -85,9 +89,9 @@ const reset = () => {
                             class="appearance-none block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
                             v-model="form.email"
                             required
-                            placeholder="Insira o e-mail do funcionário"
+                            placeholder="Insira o e-mail do cliente"
                         />
-                        <InputError class="mt-2" :message="form.errors.email" />
+                        <InputError class="mt-2" :message="form.errors.email"/>
                     </div>
                 </div>
 
@@ -112,7 +116,7 @@ const reset = () => {
                     </div>
 
                     <div class="w-full md:w-1/2 px-3">
-                        <InputLabel for="phone_number" value="Telefone" />
+                        <InputLabel for="phone_number" value="Telefone"/>
 
                         <TextInput
                             id="phone_number"
@@ -128,28 +132,6 @@ const reset = () => {
                         />
                     </div>
                 </div>
-
-                <div class="flex flex-wrap -mx-3 mb-6">
-                    <div class="w-full px-3">
-                        <InputLabel
-                            for="employee_code"
-                            value="Código do Funcionário"
-                        />
-
-                        <TextInput
-                            id="employee_code"
-                            type="text"
-                            class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                            v-model="form.employee_code"
-                            required
-                            placeholder="Insira o código do funcionário"
-                        />
-                        <InputError
-                            class="mt-2"
-                            :message="form.errors.employee_code"
-                        />
-                    </div>
-                </div>
             </form>
         </VCardText>
         <VCardActions>
@@ -157,21 +139,22 @@ const reset = () => {
                 class="ms-4"
                 :class="{ 'opacity-25': form.processing }"
                 :disabled="form.processing"
-                buttonText="Editar"
+                buttonText="Cadastrar"
                 variant="elevated"
-                icon="fa-pencil"
+                icon="fa-paper-plane"
                 color="primary"
-                @click="edit"
+                @click="create"
+                :loading="loadingBtn"
             />
 
             <GeneralButton
                 class="ms-4"
                 :class="{ 'opacity-25': form.processing }"
-                buttonText="Voltar"
+                buttonText="Limpar"
                 variant="elevated"
-                icon="fa-arrow-rotate-left"
+                icon="fa-ban"
                 color="secondary"
-                @click="$inertia.get(route('users'))"
+                @click="reset"
             />
         </VCardActions>
     </AuthenticatedLayout>

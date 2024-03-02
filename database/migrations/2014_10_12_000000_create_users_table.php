@@ -20,8 +20,8 @@ return new class extends Migration {
                 \App\Enums\UserRole::CUSTOMER->value,
                 \App\Enums\UserRole::EMPLOYEE->value,
             ]);
-            $table->string('phone_number');
-            $table->date('birthdate');
+            $table->string('phone_number')->nullable();
+            $table->date('birthdate')->nullable();
             $table->string('employee_code')->nullable();
             $table->datetime('last_visit')->nullable();
             $table->string('password');

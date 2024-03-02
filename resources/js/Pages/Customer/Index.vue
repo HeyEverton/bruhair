@@ -1,21 +1,21 @@
 <script lang="ts" setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { Head } from "@inertiajs/vue3";
-import { VCardText, VDataTableServer } from "vuetify/lib/components/index.mjs";
+import {Head} from "@inertiajs/vue3";
+import {VCardText, VDataTableServer} from "vuetify/lib/components/index.mjs";
 import GeneralButton from "../../Components/GeneralButton.vue";
-import { computed, onMounted, ref, watch } from "vue";
-import { LengthAwarePaginator } from "../../types";
+import {computed, onMounted, ref, watch} from "vue";
+import {LengthAwarePaginator} from "../../types";
 import TextInput from "@/Components/TextInput.vue";
 import Select from "@/Components/Select.vue";
-import { Tooltip, initTE } from "tw-elements";
+import {Tooltip, initTE} from "tw-elements";
 import InputLabel from "@/Components/InputLabel.vue";
-import { useSweetAlert } from "@/composables/useSweetAlert";
-import { useForm } from "@inertiajs/vue3";
+import {useSweetAlert} from "@/composables/useSweetAlert";
+import {useForm} from "@inertiajs/vue3";
 
-const { showAlert } = useSweetAlert();
+const {showAlert} = useSweetAlert();
 
 interface Props {
-    users: LengthAwarePaginator;
+    customers: LengthAwarePaginator;
 }
 
 const props = defineProps<Props>();
@@ -71,20 +71,16 @@ const itemsPerPageOptions = [
     },
 ];
 
-const users = ref(props.users.data);
+const customers = ref(props.customers.data);
 
-onMounted(() => {
-    initTE({ Tooltip });
-});
 
 const searchField = ref("");
 const loadingId = ref("");
 
 const deleteEmployee = (emplyoeeId: string, index: number) => {
-    loadingId.value = emplyoeeId;
     const options = {
         title: "Você tem certeza?",
-        text: "Você não conseguirá recuperar este funcionário",
+        text: "Você não conseguirá recuperar este Cliente",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#DD6B55",
@@ -98,12 +94,12 @@ const deleteEmployee = (emplyoeeId: string, index: number) => {
 
 const confirmDelete = (id: string, index: number) => {
     loadingId.value = id;
-    users.value.splice(index, 1);
-    useForm({}).delete(route("exclude.employee", { id: id }), {
+    customers.value.splice(index, 1);
+    useForm({}).delete(route("customer.destroy", {id: id}), {
         onSuccess: () => {
             showAlert({
                 title: "Sucesso!",
-                text: "Funcionário excluído com sucesso",
+                text: "Cliente excluído com sucesso",
                 icon: "success",
             });
             loadingId.value = "";
@@ -111,7 +107,7 @@ const confirmDelete = (id: string, index: number) => {
         onError: (error) => {
             showAlert({
                 title: "Sucesso!",
-                text: "Funcionário excluído com sucesso",
+                text: "Cliente excluído com sucesso",
                 icon: "success",
             });
         },
@@ -120,9 +116,9 @@ const confirmDelete = (id: string, index: number) => {
 
 const search = (value: string) => {
     if (value === "") {
-        users.value = props.users.data;
+        customers.value = props.customers.data;
     } else {
-        users.value = props.users.data.filter((user) => {
+        customers.value = props.customers.data.filter((user) => {
             return (
                 user.name.toLowerCase().includes(value.toLowerCase()) ||
                 user.email.toLowerCase().includes(value.toLowerCase())
@@ -136,12 +132,12 @@ watch(searchField, (newValue) => {
 });
 </script>
 <template>
-    <Head title="Funcionários" />
+    <Head title="Clientes"/>
 
     <AuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Funcionários
+                Clientes
             </h2>
         </template>
 
@@ -168,16 +164,16 @@ watch(searchField, (newValue) => {
                         <GeneralButton
                             color="primary"
                             icon="fa-plus"
-                            button-text="Novo Funcionário"
-                            @click="$inertia.get(route('employee.create'))"
+                            button-text="Novo Cliente"
+                            @click="$inertia.get(route('customer.create'))"
                         />
                     </VCol>
                 </VRow>
                 <VDataTableServer
-                    :items-length="users.length"
+                    :items-length="customers.length"
                     density="comfortable"
-                    no-data-text="Nenhum funcionário foi encontrado"
-                    :items="users"
+                    no-data-text="Nenhum cliente foi encontrado"
+                    :items="customers"
                     :headers="headers"
                     items-per-page-text="Linhas por página"
                     show-current-page
@@ -189,11 +185,7 @@ watch(searchField, (newValue) => {
                                 color="primary"
                                 icon="fa-pencil"
                                 size="35"
-                                @click="
-                                    $inertia.get(
-                                        route('employee.edit', item.id)
-                                    )
-                                "
+                                @click="$inertia.get(route('customer.edit', item.id))"
                             />
                             <GeneralButton
                                 color="red"
@@ -205,7 +197,7 @@ watch(searchField, (newValue) => {
                         </div>
                     </template>
 
-                    <template #bottom> </template>
+                    <template #bottom></template>
                 </VDataTableServer>
             </VCardText>
         </VCard>
