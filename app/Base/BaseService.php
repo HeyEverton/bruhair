@@ -14,7 +14,7 @@ class BaseService
 
     public function index(array $options = [])
     {
-        return $this->model->simplePaginate($options['per_page'] ?? 15);
+        return $this->model->paginate($options['per_page'] ?? 15);
     }
 
     public function create(array $payload, string $shouldReturnResource = 'no_return'): int | object
