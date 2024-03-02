@@ -43,7 +43,8 @@ Route::get('users/{id}', [UserController::class, 'edit'])
     ->name('employee.edit');
 Route::put('users/{id}', [UserController::class, 'update'])
     ->name('employee.update');
-Route::delete('exclude/{id}', [UserController::class, 'destroy'])->name('exclude.employee');
+Route::delete('users/{id}', [UserController::class, 'destroy']
+)->name('exclude.employee');
 
 
 /* ! customers */
@@ -58,7 +59,7 @@ Route::get('customers/{id}', [CustomerController::class, 'edit'])
     ->name('customer.edit');
 Route::put('customers/{id}', [CustomerController::class, 'update'])
     ->name('customer.update');
-Route::delete('exclude/{id}', [CustomerController::class, 'destroy'])->name('customer.destroy');
+Route::delete('customers/{id}', [CustomerController::class, 'destroy'])->name('customer.destroy');
 
 
 //Route::get()
@@ -67,7 +68,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
 
 });
 

@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Enums\UserRole;
-use App\Http\Requests\Employee\CreateCustomerRequest;
-use App\Http\Requests\Employee\UpdateCustomerRequest;
+use App\Http\Requests\Employee\CreateEmployeeRequest;
+use App\Http\Requests\Employee\UpdateEmployeeRequest;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -44,7 +44,7 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(CreateCustomerRequest $request)
+    public function store(CreateEmployeeRequest $request)
     {
         try {
             $data = $request->validated();
@@ -79,7 +79,7 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCustomerRequest $request, string $id)
+    public function update(UpdateEmployeeRequest $request, string $id)
     {
         try {
             $data = $request->validated();
