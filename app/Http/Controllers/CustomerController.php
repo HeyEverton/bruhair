@@ -96,7 +96,6 @@ class CustomerController extends Controller
 
         if (auth()->user()->id === $id) {
             return abort(403, 'Você não pode excluir seu próprio usuário');
-            /*return Inertia::render('Error', ['message' => 'Você não pode excluir seu próprio usuário.'])->toResponse(request())->setStatusCode(403);*/
         }
         $this->service->destroy($id);
         return redirect('customers');
