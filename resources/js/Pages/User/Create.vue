@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { VCardText } from "vuetify/lib/components/index.mjs";
+import {VCardText} from "vuetify/lib/components/index.mjs";
 import GeneralButton from "../../Components/GeneralButton.vue";
 import TextInput from "@/Components/TextInput.vue";
 import InputLabel from "@/Components/InputLabel.vue";
-import { useSweetAlert } from "@/composables/useSweetAlert";
-import { Head, useForm } from "@inertiajs/vue3";
+import {useSweetAlert} from "@/composables/useSweetAlert";
+import {Head, useForm} from "@inertiajs/vue3";
 import InputError from "@/Components/InputError.vue";
+import {ref} from "vue";
 
 const form = useForm({
     name: "",
@@ -16,12 +17,14 @@ const form = useForm({
     employee_code: "",
 });
 
-const { showAlert } = useSweetAlert();
+const {showAlert} = useSweetAlert();
+const loadingBtn = ref<boolean>(false)
 
 const create = () => {
-    console.log("creating..");
+    loadingBtn.value = true
     form.post(route("employee.store"), {
         onSuccess: () => {
+            loadingBtn.value = false
             form.reset();
             showAlert({
                 title: "Sucesso!",
@@ -38,7 +41,7 @@ const reset = () => {
 </script>
 
 <template>
-    <Head title="Cadastrar " />
+    <Head title="Cadastrar "/>
 
     <AuthenticatedLayout>
         <template #header>
@@ -59,7 +62,7 @@ const reset = () => {
             <form @submit.prevent="create">
                 <div class="flex flex-wrap -mx-3 mb-6">
                     <div class="w-full md:w-1/2 px-3 mb-1 md:mb-0">
-                        <InputLabel for="name" value="Nome" />
+                        <InputLabel for="name" value="Nome"/>
 
                         <TextInput
                             id="name"
@@ -69,11 +72,11 @@ const reset = () => {
                             required
                             placeholder="Insira o nome do funcionário"
                         />
-                        <InputError class="mt-2" :message="form.errors.name" />
+                        <InputError class="mt-2" :message="form.errors.name"/>
                     </div>
 
                     <div class="w-full md:w-1/2 px-3">
-                        <InputLabel for="email" value="E-mail" />
+                        <InputLabel for="email" value="E-mail"/>
 
                         <TextInput
                             id="email"
@@ -83,7 +86,7 @@ const reset = () => {
                             required
                             placeholder="Insira o e-mail do funcionário"
                         />
-                        <InputError class="mt-2" :message="form.errors.email" />
+                        <InputError class="mt-2" :message="form.errors.email"/>
                     </div>
                 </div>
 
@@ -108,7 +111,7 @@ const reset = () => {
                     </div>
 
                     <div class="w-full md:w-1/2 px-3">
-                        <InputLabel for="phone_number" value="Telefone" />
+                        <InputLabel for="phone_number" value="Telefone"/>
 
                         <TextInput
                             id="phone_number"
@@ -158,6 +161,7 @@ const reset = () => {
                 icon="fa-paper-plane"
                 color="primary"
                 @click="create"
+                :loading="loadingBtn"
             />
 
             <GeneralButton

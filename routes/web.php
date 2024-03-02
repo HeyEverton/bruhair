@@ -30,7 +30,7 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-
+/* ! users */
 Route::get('users', [UserController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('users');
@@ -42,6 +42,10 @@ Route::get('users/{id}', [UserController::class, 'edit'])
     ->name('employee.edit');
 Route::put('users/{id}', [UserController::class, 'update'])
     ->name('employee.update');
+
+
+
+//Route::get()
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
