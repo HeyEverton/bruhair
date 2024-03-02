@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CustomerController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -42,7 +43,22 @@ Route::get('users/{id}', [UserController::class, 'edit'])
     ->name('employee.edit');
 Route::put('users/{id}', [UserController::class, 'update'])
     ->name('employee.update');
+Route::delete('exclude/{id}', [UserController::class, 'destroy'])->name('exclude.employee');
 
+
+/* ! customers */
+Route::get('customers', [CustomerController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('customers');
+Route::get('customers/create', [CustomerController::class, 'create'])
+    ->middleware(['auth', 'verified'])->name('customer.create');
+Route::post('customers', [CustomerController::class, 'store'])
+    ->name('customer.store');
+Route::get('customers/{id}', [CustomerController::class, 'edit'])
+    ->name('customer.edit');
+Route::put('customers/{id}', [CustomerController::class, 'update'])
+    ->name('customer.update');
+Route::delete('exclude/{id}', [CustomerController::class, 'destroy'])->name('customer.destroy');
 
 
 //Route::get()
@@ -53,7 +69,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
 
-    Route::delete('exclude/{id}', [UserController::class, 'destroy'])->name('exclude.employee');
 });
 
 require __DIR__ . '/auth.php';

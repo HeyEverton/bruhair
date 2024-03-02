@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\UserRole;
-use App\Http\Requests\Employee\CreateCustomerRequest;
-use App\Http\Requests\Employee\UpdateCustomerRequest;
+use App\Http\Requests\Customer\CreateCustomerRequest;
+use App\Http\Requests\Customer\UpdateCustomerRequest;
+use App\Services\CustomerService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -12,10 +12,10 @@ use Illuminate\Support\Facades\Response;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Hash;
 
-class UserController extends Controller
+class CustomerController extends Controller
 {
 
-    public function __construct(private UserService $service)
+    public function __construct(private CustomerService $service)
     {
     }
 
@@ -25,9 +25,9 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $query = $request->query();
-        $users = $this->service->index($query);
-        return Inertia::render('User/Index', [
-            'users' => $users,
+        $customers = $this->service->index($query);
+        return Inertia::render('Customer/Index', [
+            'customers' => $customers,
         ]);
     }
 
@@ -36,7 +36,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        return Inertia::render('User/Create');
+        return Inertia::render('Customer/Create');
     }
 
 
@@ -48,8 +48,6 @@ class UserController extends Controller
     {
         try {
             $data = $request->validated();
-            $data['password'] = '12345678';
-            $data['role'] = UserRole::EMPLOYEE->value;
             $this->service->create($data);
         } catch (\Exception $exception) {
             Log::error($exception);
@@ -70,9 +68,9 @@ class UserController extends Controller
      */
     public function edit(string $id)
     {
-        $user = $this->service->show($id);
-        return Inertia::render('User/Edit', [
-            'user' => $user,
+        $customer = $this->service->show($id);
+        return Inertia::render('Customer/Edit', [
+            'customer' => $customer,
         ]);
     }
 
@@ -101,6 +99,6 @@ class UserController extends Controller
             /*return Inertia::render('Error', ['message' => 'Você não pode excluir seu próprio usuário.'])->toResponse(request())->setStatusCode(403);*/
         }
         $this->service->destroy($id);
-        return redirect('users');
+        return redirect('customers');
     }
 }
