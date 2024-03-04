@@ -1,4 +1,4 @@
-# Sistema de Gerenciamento para Clínicas
+# Sistema de Gerenciamento para Salão de Beleza BruHair
 
 ## Visão Geral
 
