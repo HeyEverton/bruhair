@@ -7,21 +7,18 @@ import InputLabel from "@/Components/InputLabel.vue";
 import {useSweetAlert} from "@/composables/useSweetAlert";
 import {Head, useForm} from "@inertiajs/vue3";
 import InputError from "@/Components/InputError.vue";
-import {IUser} from "../types/user-customer-employee";
-import {ref} from "vue";
+import {IProduct} from "../types/product";
+import {ref, watch} from "vue";
 
 interface Props {
-    customer: IUser;
+    product: IProduct;
 }
 
 const props = defineProps<Props>();
 
 const form = useForm({
-    name: props.customer.name,
-    email: props.customer.email,
-    phone_number: props.customer.phone_number,
-    birthdate: props.customer.birthdate,
-    employee_code: props.customer.employee_code,
+    name: props.product.name,
+    avg_price: props.product.avg_price,
 });
 
 const {showAlert} = useSweetAlert();
@@ -29,12 +26,12 @@ const loadingEdit = ref<boolean>(false)
 
 const edit = () => {
     loadingEdit.value = true
-    form.put(route("customer.edit", {id: props.customer.id}), {
+    form.put(route("products.update", {id: props.product.id}), {
         onSuccess: () => {
             loadingEdit.value = false
             showAlert({
                 title: "Sucesso!",
-                text: "Cliente Editado com sucesso",
+                text: "Produto Editado com sucesso",
                 icon: "success",
             });
         },
@@ -42,29 +39,40 @@ const edit = () => {
             loadingEdit.value = false
             showAlert({
                 title: "Erro!",
-                text: "Poxa! Algo deu errado, tente novamente mais tarde.",
+                text: "Poxa! Algo deu errado, tente novamente",
                 icon: "error",
             });
         }
     });
 };
 
+watch(form, newValue => {
+    const regex = /[a-zA-Z]/
+    if (regex.test(newValue.avg_price)) {
+        form.avg_price = ''
+        showAlert({
+            title: "Ops! Inválido!",
+            text: "Apenas números são permitidos.",
+            icon: "warning",
+        });
+    }
+})
 </script>
 
 <template>
-    <Head title="Editar Cliente "/>
+    <Head title="Editar Produto "/>
 
     <AuthenticatedLayout>
         <template #header>
             <div class="d-flex justify-between align-center">
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                    Editar Cliente
+                    Editar Produto
                 </h2>
 
                 <GeneralButton
                     color="primary"
                     icon="fa-arrow-rotate-left"
-                    @click="$inertia.get(route('customers'))"
+                    @click="$inertia.get(route('products'))"
                 />
             </div>
         </template>
@@ -73,75 +81,44 @@ const edit = () => {
             <form @submit.prevent="edit">
                 <div class="flex flex-wrap -mx-3 mb-6">
                     <div class="w-full md:w-1/2 px-3 mb-1 md:mb-0">
+                        <!-- TODO: refactor in employee put the same required thing                         -->
                         <div class="d-flex ">
                             <InputLabel for="name" value="Nome"/>
                             <span class="text-danger ml-1">
                                 *
                             </span>
                         </div>
+
                         <TextInput
                             id="name"
                             type="text"
                             class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                             v-model="form.name"
                             required
-                            placeholder="Insira o nome do funcionário"
+                            placeholder="Insira o nome do produto"
                         />
                         <InputError class="mt-2" :message="form.errors.name"/>
                     </div>
 
                     <div class="w-full md:w-1/2 px-3">
-                        <InputLabel for="email" value="E-mail"/>
-
+                        <div class="d-flex ">
+                            <InputLabel for="avg_price" value="Preço Médio"/>
+                            <span class="text-danger ml-1">
+                                *
+                            </span>
+                        </div>
                         <TextInput
-                            id="email"
-                            type="email"
-                            class="appearance-none block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
-                            v-model="form.email"
-                            required
-                            placeholder="Insira o e-mail do funcionário"
-                        />
-                        <InputError class="mt-2" :message="form.errors.email"/>
-                    </div>
-                </div>
-
-                <div class="flex flex-wrap -mx-3 mb-6">
-                    <div class="w-full md:w-1/2 px-3 mb- md:mb-0">
-                        <InputLabel
-                            for="birth_date"
-                            value="Data de nascimento"
-                        />
-
-                        <TextInput
-                            id="birth_date"
-                            type="date"
-                            v-model="form.birthdate"
-                            class="appearance-none block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
-                            max="2022-12-31"
-                        />
-                        <InputError
-                            class="mt-2"
-                            :message="form.errors.birthdate"
-                        />
-                    </div>
-
-                    <div class="w-full md:w-1/2 px-3">
-                        <InputLabel for="phone_number" value="Telefone"/>
-
-                        <TextInput
-                            id="phone_number"
-                            type="text"
+                            id="avg_price"
                             class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                            v-model="form.phone_number"
-                            v-mask="'(##) #####-####'"
-                            placeholder="(##) #####-####"
+                            v-model="form.avg_price"
+                            required
+                            placeholder="Insira o preço do produto"
+                            maxlength="6"
                         />
-                        <InputError
-                            class="mt-2"
-                            :message="form.errors.phone_number"
-                        />
+                        <InputError class="mt-2" :message="form.errors.avg_price"/>
                     </div>
                 </div>
+
             </form>
         </VCardText>
         <VCardActions>
@@ -164,7 +141,7 @@ const edit = () => {
                 variant="elevated"
                 icon="fa-arrow-rotate-left"
                 color="secondary"
-                @click="$inertia.get(route('customers'))"
+                @click="$inertia.get(route('products'))"
             />
         </VCardActions>
     </AuthenticatedLayout>

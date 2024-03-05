@@ -7,7 +7,7 @@ use App\Models\User;
 
 class ProductService extends BaseService
 {
-    public function __construct(private Product $product)
+    public function __construct(private readonly Product $product)
     {
         parent::__construct($product);
     }

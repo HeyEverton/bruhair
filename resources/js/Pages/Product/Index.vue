@@ -15,7 +15,7 @@ import {useForm} from "@inertiajs/vue3";
 const {showAlert} = useSweetAlert();
 
 interface Props {
-    customers: LengthAwarePaginator;
+    products: LengthAwarePaginator;
 }
 
 const props = defineProps<Props>();
@@ -27,18 +27,8 @@ const headers = [
         sortable: true,
     },
     {
-        title: "E-mail",
-        key: "email",
-        sortable: true,
-    },
-    {
-        title: "Data de nascimento",
-        key: "birth_date_formatted",
-        sortable: true,
-    },
-    {
-        title: "Telefone",
-        key: "phone_number",
+        title: "Preço Médio",
+        key: "price_formatted",
         sortable: true,
     },
     {
@@ -71,7 +61,7 @@ const itemsPerPageOptions = [
     },
 ];
 
-const customers = ref(props.customers.data);
+const products = ref(props.products.data);
 
 
 const searchField = ref("");
@@ -80,7 +70,7 @@ const loadingId = ref("");
 const deleteEmployee = (emplyoeeId: string, index: number) => {
     const options = {
         title: "Você tem certeza?",
-        text: "Você não conseguirá recuperar este Cliente",
+        text: "Você não conseguirá recuperar este Produto",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#DD6B55",
@@ -94,12 +84,12 @@ const deleteEmployee = (emplyoeeId: string, index: number) => {
 
 const confirmDelete = (id: string, index: number) => {
     loadingId.value = id;
-    customers.value.splice(index, 1);
-    useForm({}).delete(route("customer.destroy", {id: id}), {
+    products.value.splice(index, 1);
+    useForm({}).delete(route("products.destroy", {id: id}), {
         onSuccess: () => {
             showAlert({
                 title: "Sucesso!",
-                text: "Cliente excluído com sucesso",
+                text: "Produto excluído com sucesso",
                 icon: "success",
             });
             loadingId.value = "";
@@ -107,7 +97,7 @@ const confirmDelete = (id: string, index: number) => {
         onError: (error) => {
             showAlert({
                 title: "Sucesso!",
-                text: "Cliente excluído com sucesso",
+                text: "Produto excluído com sucesso",
                 icon: "success",
             });
         },
@@ -116,13 +106,10 @@ const confirmDelete = (id: string, index: number) => {
 
 const search = (value: string) => {
     if (value === "") {
-        customers.value = props.customers.data;
+        products.value = props.products.data;
     } else {
-        customers.value = props.customers.data.filter((user) => {
-            return (
-                user.name.toLowerCase().includes(value.toLowerCase()) ||
-                user.email.toLowerCase().includes(value.toLowerCase())
-            );
+        products.value = props.products.data.filter((product) => {
+            return product.name.toLowerCase().includes(value.toLowerCase())
         });
     }
 };
@@ -132,12 +119,12 @@ watch(searchField, (newValue) => {
 });
 </script>
 <template>
-    <Head title="Clientes"/>
+    <Head title="Produtos"/>
 
     <AuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Clientes
+                Produtos
             </h2>
         </template>
 
@@ -155,7 +142,7 @@ watch(searchField, (newValue) => {
                             type="text"
                             class="appearance-none block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
                             v-model="searchField"
-                            placeholder="Pesquise por nome ou e-mail"
+                            placeholder="Pesquise por nome"
                             @input="search"
                         />
                     </VCol>
@@ -164,16 +151,16 @@ watch(searchField, (newValue) => {
                         <GeneralButton
                             color="primary"
                             icon="fa-plus"
-                            button-text="Novo Cliente"
-                            @click="$inertia.get(route('customer.create'))"
+                            button-text="Novo Produto"
+                            @click="$inertia.get(route('products.create'))"
                         />
                     </VCol>
                 </VRow>
                 <VDataTableServer
-                    :items-length="customers.length"
+                    :items-length="products.length"
                     density="comfortable"
-                    no-data-text="Nenhum cliente foi encontrado"
-                    :items="customers"
+                    no-data-text="Nenhum produto foi encontrado"
+                    :items="products"
                     :headers="headers"
                     items-per-page-text="Linhas por página"
                     show-current-page
@@ -185,7 +172,7 @@ watch(searchField, (newValue) => {
                                 color="primary"
                                 icon="fa-pencil"
                                 size="35"
-                                @click="$inertia.get(route('customer.edit', item.id))"
+                                @click="$inertia.get(route('products.edit', item.id))"
                             />
                             <GeneralButton
                                 color="red"
