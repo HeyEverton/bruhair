@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -61,8 +62,21 @@ Route::put('customers/{id}', [CustomerController::class, 'update'])
     ->name('customer.update');
 Route::delete('customers/{id}', [CustomerController::class, 'destroy'])->name('customer.destroy');
 
+/* ! customers */
+Route::get('products', [ProductController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('products');
+Route::get('products/create', [ProductController::class, 'create'])
+    ->middleware(['auth', 'verified'])->name('products.create');
+Route::post('products', [ProductController::class, 'store'])
+    ->name('products.store');
+Route::get('products/{id}', [ProductController::class, 'edit'])
+    ->name('products.edit');
+Route::put('products/{id}', [ProductController::class, 'update'])
+    ->name('products.update');
+Route::delete('products/{id}', [ProductController::class, 'destroy'])
+    ->name('products.destroy');
 
-//Route::get()
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
