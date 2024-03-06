@@ -28,9 +28,7 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/pdv', [\App\Http\Controllers\PDVController::class, 'index'])->middleware(['auth', 'verified'])->name('pdv');
 
 /* ! users */
 Route::get('users', [UserController::class, 'index'])
@@ -61,6 +59,7 @@ Route::get('customers/{id}', [CustomerController::class, 'edit'])
 Route::put('customers/{id}', [CustomerController::class, 'update'])
     ->name('customer.update');
 Route::delete('customers/{id}', [CustomerController::class, 'destroy'])->name('customer.destroy');
+
 
 /* ! customers */
 Route::get('products', [ProductController::class, 'index'])

@@ -10,6 +10,7 @@ import {library} from '@fortawesome/fontawesome-svg-core';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import * as fas from '@fortawesome/free-solid-svg-icons';
 import InfiniteLoading from 'v3-infinite-loading'
+import {vue3Debounce} from 'vue-debounce'
 
 
 import VueSweetalert2 from 'vue-sweetalert2';
@@ -44,6 +45,7 @@ createInertiaApp({
             .directive('mask', mask)
             // components
             .component('font-awesome-icon', FontAwesomeIcon)
+            .directive('debounce', vue3Debounce({lock: true}))
             .use(ZiggyVue)
             .mount(el);
     },
