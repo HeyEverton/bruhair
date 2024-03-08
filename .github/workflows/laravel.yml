@@ -24,5 +24,5 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           port: ${{ secrets.PORT }}
-          password: ${{ secrets.PASSWORD }}
+          key: ${{ secrets.SSHKEY }}
           script: "cd /home/u298973981/public_html/ && ./.scripts/deploy.sh"
