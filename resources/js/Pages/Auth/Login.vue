@@ -71,7 +71,7 @@ const submit = () => {
                 <label class="flex items-center">
                     <Checkbox name="remember" v-model:checked="form.remember" />
                     <span class="ms-2 text-sm text-gray-600"
-                        >Lembrar de mim</span
+                        >Lembrar de mim teste</span
                     >
                 </label>
             </div>
@@ -82,7 +82,7 @@ const submit = () => {
                     :href="route('password.request')"
                     class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
-                    Esqueceu sua senha? teste
+                    Esqueceu sua senha?
                 </Link>
 
                 <PrimaryButton
