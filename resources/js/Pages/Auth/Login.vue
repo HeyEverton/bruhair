@@ -71,7 +71,7 @@ const submit = () => {
                 <label class="flex items-center">
                     <Checkbox name="remember" v-model:checked="form.remember" />
                     <span class="ms-2 text-sm text-gray-600"
-                        >Lembrar de mim teste</span
+                        >Lembrar de mim</span
                     >
                 </label>
             </div>
