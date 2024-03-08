@@ -1,5 +1,10 @@
 #!/bin/bash
 
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
+export NVM_INC="$HOME/.nvm/versions/node/v18.19.1/include/node"
+
 set -e
 
 echo "Deployment started ..."
@@ -32,8 +37,8 @@ php artisan migrate --force
 #php artisan db:seed --force
 
 # use node
-# echo "use node 20.9.0"
-# nvm use 20.9.0
+echo "use node 18.19.1"
+nvm use 18.19.1
 
 # Install NPM dependencies
 echo "Install NPM dependencies"
