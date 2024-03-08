@@ -3,7 +3,7 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
-        "build": "vue-tsc && vite build && vite build --ssr"
+        "build": "vite build && vite build --ssr"
     },
     "devDependencies": {
         "@fortawesome/fontawesome-svg-core": "^6.5.1",
