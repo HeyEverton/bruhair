@@ -42,7 +42,7 @@ nvm use 18.19.1
 
 # Install NPM dependencies
 echo "Install NPM dependencies"
-npm run install
+npm install
 
 # package build
 echo "Build NPM dependencies"
