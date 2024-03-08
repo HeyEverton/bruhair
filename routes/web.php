@@ -28,7 +28,11 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/pdv', [\App\Http\Controllers\PDVController::class, 'index'])->middleware(['auth', 'verified'])->name('pdv');
+Route::get('/pdv', [\App\Http\Controllers\PDVController::class, 'index'])
+    ->middleware(['auth', 'verified'])->name('pdv');
+
+Route::post('/pdv/new', [\App\Http\Controllers\OrderController::class, 'store'])
+    ->middleware(['auth', 'verified'])->name('pdv.store');
 
 /* ! users */
 Route::get('users', [UserController::class, 'index'])
@@ -42,7 +46,9 @@ Route::get('users/{id}', [UserController::class, 'edit'])
     ->name('employee.edit');
 Route::put('users/{id}', [UserController::class, 'update'])
     ->name('employee.update');
-Route::delete('users/{id}', [UserController::class, 'destroy']
+Route::delete(
+    'users/{id}',
+    [UserController::class, 'destroy']
 )->name('exclude.employee');
 
 
@@ -81,7 +87,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
 });
 
 require __DIR__ . '/auth.php';
