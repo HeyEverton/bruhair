@@ -34,4 +34,11 @@ class CustomerService extends BaseService
         }
         return Response::HTTP_CREATED;
     }
+
+    public function list()
+    {
+        return $this->user
+            ->where('role', '=', UserRole::CUSTOMER->value)
+            ->get();
+    }
 }

@@ -4,4 +4,5 @@ export interface IProduct {
     avg_price: string
     created_at?: string
     updated_at?: string
+    price_formatted?: string
 }
