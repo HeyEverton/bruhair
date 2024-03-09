@@ -16,11 +16,13 @@ class CustomerService extends BaseService
 
     public function index(array $options = [])
     {
-        return $this->user
-            ->where('role', UserRole::CUSTOMER->value)
-            ->orderBy($options['sort_by'] ?? 'name', $options['sort_order'] ?? 'ASC')
-            ->paginate($options['per_page'] ?? 15);
-
+        return [
+            'data' => $this->user
+                ->where('role', UserRole::CUSTOMER->value)
+                ->orderBy($options['sort_by'] ?? 'name', $options['sort_order'] ?? 'ASC')
+                ->limit(500)
+                ->get()
+        ];
     }
 
     public function create(array $payload, string $shouldReturnResource = 'no_return'): int|object

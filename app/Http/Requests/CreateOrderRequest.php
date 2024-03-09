@@ -22,6 +22,10 @@ class CreateOrderRequest extends FormRequest
                 'required',
                 'exists:users,id',
             ],
+            'employee_id' => [
+                'required',
+                'exists:users,id',
+            ],
             'product_id' => [
                 'required',
                 'exists:products,id'

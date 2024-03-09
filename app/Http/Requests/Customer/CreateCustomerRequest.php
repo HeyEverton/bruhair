@@ -20,7 +20,6 @@ class CreateCustomerRequest extends FormRequest
             ],
             'email' => [
                 'sometimes',
-                'email',
                 'unique:users,email',
             ],
             'phone_number' => [

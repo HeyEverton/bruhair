@@ -15,7 +15,7 @@ class OrderService extends BaseService
 
     public function create(array $payload, string $shouldReturnResource = 'no_return'): int | object
     {
-        $payload['user_id'] = auth()->user()->id;
+        $payload['user_id'] = $payload['employee_id'];
         $payload['total'] = str_replace(',', '.', $payload['total']);
         $payload['total'] = str_replace('R$', '', $payload['total']);
         $payload['total'] = str_replace(' ', '', $payload['total']);

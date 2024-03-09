@@ -19,8 +19,8 @@ class PDVController extends Controller
     public function __construct(
         private readonly CustomerService $service,
         private readonly ProductService  $productService,
-    )
-    {
+        private readonly UserService  $employeeService,
+    ) {
     }
 
     /**
@@ -30,9 +30,11 @@ class PDVController extends Controller
     {
         $customers = $this->service->list();
         $products = $this->productService->list();
+        $employees = $this->employeeService->listEmployees();
         return Inertia::render('Pdv', [
             'customers' => $customers,
             'products' => $products,
+            'employees' => $employees,
         ]);
     }
 
@@ -49,5 +51,4 @@ class PDVController extends Controller
             throw $exception;
         }
     }
-
 }
