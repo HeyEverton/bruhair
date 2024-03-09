@@ -13,6 +13,15 @@ class ProductService extends BaseService
         parent::__construct($product);
     }
 
+    public function index(array $options = [])
+    {
+        return [
+            'data' => $this->product
+                ->limit(500)
+                ->get()
+        ];
+    }
+
     public function create(array $payload, string $shouldReturnResource = 'no_return'): int | object
     {
         $price = str_replace(',', '.', $payload['avg_price']);

@@ -13,6 +13,17 @@ class UserService extends BaseService
         parent::__construct($user);
     }
 
+    public function index(array $options = [])
+    {
+        return [
+            'data' => $this->user
+                ->where('role', UserRole::EMPLOYEE->value)
+                ->orderBy($options['sort_by'] ?? 'name', $options['sort_order'] ?? 'ASC')
+                ->limit(500)
+                ->get()
+        ];
+    }
+
     public function listEmployees()
     {
         return $this->user
