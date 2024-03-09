@@ -77,14 +77,8 @@ const create = () => {
             </h2>
         </template>
 
-        <div class="py-12">
-            <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
-                    <div class="p-6 text-gray-900">Inicie uma Nova venda</div>
-                </div>
-            </div>
-        </div>
-        <form @submit.prevent="create">
+
+        <form @submit.prevent="create" class="py-12">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg d-flex">
                     <div class="flex flex-wrap w-full px-3 md:w-1/2 mb- md:mb-0">
