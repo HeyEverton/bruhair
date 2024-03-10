@@ -28,8 +28,9 @@ class ProductService extends BaseService
         $price = str_replace('R$', '', $price);
         $price = str_replace(' ', '', $price);
         $payload['avg_price'] = $price;
+        $product = $this->product->create($payload);
         if ($shouldReturnResource && $shouldReturnResource == 'return_resource') {
-            return $this->product->create($payload);
+            return $product;
         }
         return 201;
     }
