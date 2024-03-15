@@ -18,7 +18,7 @@ class OrderController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $orders = $this->service->index([]);
         return Inertia::render('Order/Index', [
@@ -78,5 +78,21 @@ class OrderController extends Controller
     public function destroy(Order $order)
     {
         //
+    }
+
+    public function searchOrders(Request $request)
+    {
+
+        if (!$request->query('date')) {
+            $orders = $this->service->index([]);
+            return Inertia::render('Order/Index', [
+                'orders' => $orders,
+            ]);
+        }
+        $orders = $this->service->filter($request->query('date'));
+
+        return Inertia::render('Order/Index', [
+            'orders' => $orders,
+        ]);
     }
 }

@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -31,8 +32,11 @@ Route::get('/', function () {
 Route::get('/pdv', [\App\Http\Controllers\PDVController::class, 'index'])
     ->middleware(['auth', 'verified'])->name('pdv');
 
-Route::post('/pdv/new', [\App\Http\Controllers\OrderController::class, 'store'])
+Route::post('/pdv/new', [OrderController::class, 'store'])
     ->middleware(['auth', 'verified'])->name('pdv.store');
+
+Route::get('/pdv/orders', [OrderController::class, 'index'])->name('pdv.orders');
+Route::get('/orders', [OrderController::class, 'searchOrders'])->name('search.orders');
 
 /* ! users */
 Route::get('users', [UserController::class, 'index'])
