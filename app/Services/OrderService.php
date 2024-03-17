@@ -9,8 +9,9 @@ use Illuminate\Http\Response;
 
 class OrderService extends BaseService
 {
-    public function __construct(private Order $order)
-    {
+    public function __construct(
+        private Order $order
+    ) {
         parent::__construct($order);
     }
 
