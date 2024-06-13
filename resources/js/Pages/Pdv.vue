@@ -77,9 +77,11 @@ const create = () => {
         </template>
 
         <form @submit.prevent="create" class="py-12">
-            <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+            <div
+                class="mx-auto max-w-7xl sm:px-6 lg:px-8 bg-white shadow-sm sm:rounded-lg"
+            >
                 <div
-                    class="overflow-hidden bg-white shadow-sm sm:rounded-lg d-flex"
+                    class="overflow-hidden bg-white shadow-sm sm:rounded-lg d-flex py-3"
                 >
                     <div
                         class="flex flex-wrap w-full px-3 md:w-1/2 mb- md:mb-0"
@@ -126,8 +128,12 @@ const create = () => {
                             :message="form.errors.employee_id"
                         />
                     </div>
+                </div>
 
-                    <div class="w-full px-3 md:w-1/2">
+                <div
+                    class="overflow-hidden bg-white shadow-sm sm:rounded-lg d-flex py-3"
+                >
+                    <div class="w-full px-3 md:w-5/1">
                         <InputLabel for="product_id" value="Produto" />
 
                         <select
@@ -152,10 +158,24 @@ const create = () => {
                             :message="form.errors.product_id"
                         />
                     </div>
+
+                    <div class="w-full px-3 md:w-1/2 align-center mt-6">
+                        <GeneralButton
+                            :class="{ 'opacity-25': form.processing }"
+                            :disabled="form.processing"
+                            buttonText="Adicionar Produto"
+                            variant="elevated"
+                            icon="fa-plus"
+                            color="primary"
+                            @click="() => console.log('clicked')"
+                        />
+                    </div>
                 </div>
 
+                div.overflow-hidden
+
                 <div
-                    class="overflow-hidden bg-white shadow-sm sm:rounded-lg d-flex"
+                    class="overflow-hidden bg-white shadow-sm sm:rounded-lg d-flex py-3"
                 >
                     <div class="w-full px-3 md:w-1/2">
                         <InputLabel
@@ -195,7 +215,7 @@ const create = () => {
                 </div>
 
                 <div
-                    class="overflow-hidden bg-white shadow-sm sm:rounded-lg d-flex"
+                    class="overflow-hidden bg-white shadow-sm sm:rounded-lg d-flex py-3"
                 >
                     <div class="w-full px-3 md:w-full">
                         <InputLabel for="description" value="Descrição" />
@@ -214,7 +234,7 @@ const create = () => {
             </div>
         </form>
 
-        <div class="ml-15">
+        <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
             <GeneralButton
                 class="ms-4"
                 :class="{ 'opacity-25': form.processing }"
