@@ -11,9 +11,9 @@ class OrderItem extends Model
     use HasFactory;
     protected $fillable = [
         'order_id',
+        'quantity',
         'product_id',
         'unit_price',
-
     ];
 
     public function order(): BelongsTo

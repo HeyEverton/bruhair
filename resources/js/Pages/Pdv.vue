@@ -7,7 +7,7 @@ import TextInput from "@/Components/TextInput.vue";
 import { ref } from "vue";
 import Select from "@/Components/Select.vue";
 import { IUser } from "./types/user-customer-employee";
-import { IProduct } from "./types/product";
+import { IProduct, IProductItem } from "./types/product";
 import GeneralButton from "../Components/GeneralButton.vue";
 import { useSweetAlert } from "@/composables/useSweetAlert";
 
@@ -23,24 +23,39 @@ const products = ref<IProduct[]>(props.products);
 const employees = ref<IUser[]>(props.employees);
 const loadingOrder = ref<boolean>(false);
 
+const paymentTypes = [
+    {
+        title: "Cartão de Crédito",
+        value: 1,
+    },
+    {
+        title: "Cartão de Débito",
+        value: 2,
+    },
+    {
+        title: "PIX",
+        value: 3,
+    },
+    {
+        title: "Dinheiro",
+        value: 4,
+    },
+];
+
 const form = useForm({
     customer_id: "",
-    product_id: "",
+    selected_product: {} as IProduct,
     description: "",
     total: "",
     payment_type: "",
     employee_id: "",
+    items: [] as IProductItem[],
 });
 
 const { showAlert } = useSweetAlert();
-const changeTotal = (event: any) => {
-    form.total = event.price_formatted;
-};
 
 const create = () => {
     // loadingOrder.value = true;
-    // @ts-expect-error ...
-    form.product_id = form.product_id?.id;
     form.post(route("pdv.store"), {
         onSuccess: () => {
             loadingOrder.value = false;
@@ -64,6 +79,37 @@ const create = () => {
         },
     });
 };
+
+const addProduct = () => {
+    if (form.selected_product) {
+        form.items.push({
+            // @ts-expect-error ...
+            product_id: form.selected_product.id,
+            name: form.selected_product.name,
+            // @ts-expect-error ...
+            formatted_price: form.selected_product.price_formatted,
+            quantity: 1,
+            avg_price: form.selected_product.avg_price,
+        });
+        form.selected_product = {};
+
+        // updateTotal();
+    }
+};
+
+const removeProduct = (index: number) => {
+    form.items.splice(index, 1);
+    updateTotal();
+};
+
+const updateTotal = () => {
+    form.selected_product = {};
+    let total = form.items.reduce((sum, product) => {
+        return sum + product.avg_price;
+    }, 0);
+    console.log(total);
+    // form.total = `R$ ${total.toFixed(2)}`;
+};
 </script>
 
 <template>
@@ -80,16 +126,16 @@ const create = () => {
             <div
                 class="mx-auto max-w-7xl sm:px-6 lg:px-8 bg-white shadow-sm sm:rounded-lg"
             >
+                <!-- Cliente e Funcionário -->
                 <div
                     class="overflow-hidden bg-white shadow-sm sm:rounded-lg d-flex py-3"
                 >
                     <div
                         class="flex flex-wrap w-full px-3 md:w-1/2 mb- md:mb-0"
                     >
-                        <InputLabel for="product_id" value="Cliente" />
-
+                        <InputLabel for="customer_id" value="Cliente" />
                         <select
-                            id="product_id"
+                            id="customer_id"
                             class="block w-full px-4 py-3 mb-3 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
                             v-model="form.customer_id"
                         >
@@ -106,21 +152,21 @@ const create = () => {
                             :message="form.errors.customer_id"
                         />
                     </div>
-
-                    <div class="w-full px-3 md:w-1/2">
+                    <div
+                        class="flex flex-wrap w-full px-3 md:w-1/2 mb- md:mb-0"
+                    >
                         <InputLabel for="employee_id" value="Funcionário" />
-
                         <select
-                            v-model="form.employee_id"
                             id="employee_id"
                             class="block w-full px-4 py-3 mb-3 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
+                            v-model="form.employee_id"
                         >
                             <option value="">Selecione o Funcionário</option>
                             <option
                                 v-for="employee of employees"
                                 :value="employee.id"
                             >
-                                {{ employee?.name }}
+                                {{ employee.name }}
                             </option>
                         </select>
                         <InputError
@@ -133,14 +179,12 @@ const create = () => {
                 <div
                     class="overflow-hidden bg-white shadow-sm sm:rounded-lg d-flex py-3"
                 >
-                    <div class="w-full px-3 md:w-5/1">
-                        <InputLabel for="product_id" value="Produto" />
-
+                    <div class="w-full px-3 md:w-5/6">
+                        <InputLabel for="selected_product" value="Produto" />
                         <select
-                            id="product_id"
+                            id="selected_product"
                             class="block w-full px-4 py-3 mb-3 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
-                            v-model="form.product_id"
-                            @update:model-value="changeTotal"
+                            v-model="form.selected_product"
                         >
                             <option value="">
                                 Selecione o Produto ou Serviço
@@ -153,78 +197,128 @@ const create = () => {
                                 {{ product?.price_formatted }}
                             </option>
                         </select>
-                        <InputError
+                        <!-- <InputError
                             class="mt-2"
                             :message="form.errors.product_id"
-                        />
+                        /> -->
                     </div>
-
-                    <div class="w-full px-3 md:w-1/2 align-center mt-6">
+                    <div class="w-full px-3 md:w-1/6 align-center mt-6">
                         <GeneralButton
                             :class="{ 'opacity-25': form.processing }"
                             :disabled="form.processing"
-                            buttonText="Adicionar Produto"
+                            buttonText="Adicionar"
                             variant="elevated"
                             icon="fa-plus"
                             color="primary"
-                            @click="() => console.log('clicked')"
+                            @click="addProduct"
                         />
                     </div>
                 </div>
 
-                div.overflow-hidden
+                <div
+                    class="overflow-hidden bg-white shadow-sm sm:rounded-lg d-flex py-3"
+                >
+                    <div
+                        class="w-full px-3"
+                        style="max-height: 200px; overflow-y: auto"
+                    >
+                        <table class="min-w-full bg-white">
+                            <thead class="bg-gray- border text-dark">
+                                <tr>
+                                    <th class="px-4 py-2" for->Produto</th>
+                                    <th class="px-4 py-2">Preço</th>
+                                    <th class="px-4 py-2">Quantidade</th>
+                                    <th class="px-4 py-2">Total</th>
+                                    <th class="px-4 py-2">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    v-for="(product, index) in form.items"
+                                    :key="index"
+                                >
+                                    <td class="border px-4 py-2">
+                                        {{ product.name }}
+                                    </td>
+                                    <td class="border px-4 py-2">
+                                        {{ product.formatted_price }}
+                                    </td>
+                                    <td class="border px-4 py-2">
+                                        {{ product.quantity }}
+                                    </td>
+                                    <td class="border px-4 py-2">
+                                        {{
+                                            product.avg_price * product.quantity
+                                        }}
+                                    </td>
+                                    <td class="border px-4 py-2">
+                                        <button
+                                            class="text-red-500"
+                                            @click="removeProduct(index)"
+                                        >
+                                            Remover
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 
                 <div
                     class="overflow-hidden bg-white shadow-sm sm:rounded-lg d-flex py-3"
                 >
-                    <div class="w-full px-3 md:w-1/2">
+                    <div
+                        class="flex flex-wrap w-full px-3 md:w-1/2 mb- md:mb-0"
+                    >
                         <InputLabel
-                            for="payment_type"
+                            for="payment_method"
                             value="Forma de Pagamento"
                         />
                         <select
-                            id="payment_type"
+                            id="payment_method"
                             class="block w-full px-4 py-3 mb-3 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
                             v-model="form.payment_type"
                         >
                             <option value="">
                                 Selecione a Forma de Pagamento
                             </option>
-                            <option value="1">Cartão de Crédito</option>
-                            <option value="2">Cartão de Débito</option>
-                            <option value="3">PIX</option>
-                            <option value="4">Dinheiro</option>
+                            <option
+                                v-for="method in paymentTypes"
+                                :value="method.value"
+                            >
+                                {{ method.title }}
+                            </option>
                         </select>
                         <InputError
                             class="mt-2"
                             :message="form.errors.payment_type"
                         />
                     </div>
-
-                    <div class="w-full px-3 md:w-1/2">
+                    <div
+                        class="flex flex-wrap w-full px-3 md:w-1/2 mb- md:mb-0"
+                    >
                         <InputLabel for="total" value="Total" />
-                        <TextInput
-                            id="total"
+                        <input
                             type="text"
+                            id="total"
                             class="block w-full px-4 py-3 mb-3 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
                             v-model="form.total"
-                            required
+                            readonly
                         />
-                        <InputError class="mt-2" :message="form.errors.total" />
                     </div>
                 </div>
 
                 <div
                     class="overflow-hidden bg-white shadow-sm sm:rounded-lg d-flex py-3"
                 >
-                    <div class="w-full px-3 md:w-full">
+                    <div class="w-full px-3">
                         <InputLabel for="description" value="Descrição" />
                         <textarea
-                            v-model="form.description"
                             id="description"
-                            rows="4"
                             class="block w-full px-4 py-3 mb-3 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
-                        />
+                            v-model="form.description"
+                        ></textarea>
                         <InputError
                             class="mt-2"
                             :message="form.errors.description"
@@ -239,7 +333,7 @@ const create = () => {
                 class="ms-4"
                 :class="{ 'opacity-25': form.processing }"
                 :disabled="form.processing"
-                buttonText="Nova Venda"
+                buttonText="Finalizar Venda"
                 variant="elevated"
                 icon="fa-brazilian-real-sign"
                 color="primary"

@@ -6,3 +6,11 @@ export interface IProduct {
     updated_at?: string
     price_formatted?: string
 }
+
+export interface IProductItem {
+    product_id: number
+    name: string
+    avg_price: string
+    formatted_price: string
+    quantity: number
+}
