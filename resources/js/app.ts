@@ -11,7 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 // import * as fas from '@fortawesome/free-solid-svg-icons';
 // import InfiniteLoading from 'v3-infinite-loading'
 import { vue3Debounce } from 'vue-debounce'
-import { faBrazilianRealSign, faArrowRotateLeft, faPaperPlane, faBan, faPlus, faPencil, faTrash, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
+import { faBrazilianRealSign, faArrowRotateLeft, faPaperPlane, faBan, faPlus, faPencil, faTrash, faShoppingCart, faMinus, faEye } from '@fortawesome/free-solid-svg-icons';
 
 
 import VueSweetalert2 from 'vue-sweetalert2';
@@ -25,7 +25,7 @@ import 'v3-infinite-loading/lib/style.css'
 //         library.add(fas[iconName]);
 //     }
 // });
-library.add(faBrazilianRealSign, faArrowRotateLeft, faPaperPlane, faBan, faPlus, faPencil, faTrash, faShoppingCart);
+library.add(faBrazilianRealSign, faArrowRotateLeft, faPaperPlane, faBan, faPlus, faPencil, faTrash, faShoppingCart, faMinus, faEye);
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 import 'vuetify/styles'

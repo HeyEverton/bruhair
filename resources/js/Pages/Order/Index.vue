@@ -11,6 +11,7 @@ import { Tooltip, initTE } from "tw-elements";
 import InputLabel from "@/Components/InputLabel.vue";
 import { useSweetAlert } from "@/composables/useSweetAlert";
 import { useForm } from "@inertiajs/vue3";
+import { IProduct, IProductItem } from "../types/product";
 
 const { showAlert } = useSweetAlert();
 
@@ -19,14 +20,9 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const date = ref('');
+const date = ref("");
 
 const headers = [
-    {
-        title: "Produto/Serviço",
-        key: "product.name",
-        sortable: true,
-    },
     {
         title: "Cliente",
         key: "customer.name",
@@ -47,11 +43,11 @@ const headers = [
         key: "formatted_date",
         sortable: true,
     },
-    // {
-    //     title: "Ações",
-    //     key: "actions",
-    //     sortable: false,
-    // },
+    {
+        title: "Ações",
+        key: "actions",
+        sortable: false,
+    },
 ];
 
 const itemsPerPageOptions = [
@@ -86,43 +82,6 @@ onMounted(() => {
 const searchField = ref("");
 const loadingId = ref("");
 
-const deleteEmployee = (emplyoeeId: string, index: number) => {
-    loadingId.value = emplyoeeId;
-    const options = {
-        title: "Você tem certeza?",
-        text: "Você não conseguirá recuperar este funcionário",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#DD6B55",
-        confirmButtonText: "Sim, excluir",
-        cancelButtonText: "Não, cancelar",
-        preConfirm: () => confirmDelete(emplyoeeId, index),
-    };
-
-    showAlert(options);
-};
-
-const confirmDelete = (id: string, index: number) => {
-    loadingId.value = id;
-    users.value.splice(index, 1);
-    useForm({}).delete(route("exclude.employee", { id: id }), {
-        onSuccess: () => {
-            showAlert({
-                title: "Sucesso!",
-                text: "Funcionário excluído com sucesso",
-                icon: "success",
-            });
-            loadingId.value = "";
-        },
-        onError: (error) => {
-            showAlert({
-                title: "Sucesso!",
-                text: "Funcionário excluído com sucesso",
-                icon: "success",
-            });
-        },
-    });
-};
 
 const search = (value: string) => {
     if (value === "") {
@@ -143,12 +102,18 @@ watch(searchField, (newValue) => {
 
 const searchOrders = () => {
     useForm({}).get(route("search.orders", { date: date.value }));
-}
+};
+
+const modal = ref(false);
+const orderItems = ref<IProductItem[]>([]);
+const modalOrderItems = (order: any) => {
+    console.log(order);
+    modal.value = true;
+    orderItems.value = order.items;
+};
 </script>
 <template>
-
     <Head title="Vendas" />
-
     <AuthenticatedLayout>
         <template #header>
             <h2 class="text-xl font-semibold leading-tight text-gray-800">
@@ -160,13 +125,18 @@ const searchOrders = () => {
             <VCardText>
                 <VRow class="align-center">
                     <VCol cols="12" md="3">
-                        <InputLabel for="field" value="Selecione a data das vendas" />
+                        <InputLabel
+                            for="field"
+                            value="Selecione a data das vendas"
+                        />
 
-                        <select id="date" @change="searchOrders" v-model="date"
-                            class="block w-full px-4 py-3 mb-3 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500">
-                            <option value="">
-                                Selecione a Data
-                            </option>
+                        <select
+                            id="date"
+                            @change="searchOrders"
+                            v-model="date"
+                            class="block w-full px-4 py-3 mb-3 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
+                        >
+                            <option value="">Selecione a Data</option>
                             <option value="day">Do Dia</option>
                             <option value="week">Da Semana</option>
                             <option value="month">Do mês</option>
@@ -175,20 +145,32 @@ const searchOrders = () => {
                     </VCol>
 
                     <VCol offset-md="6">
-                        <GeneralButton color="primary" icon="fa-plus" button-text="Nova Venda"
-                            @click="$inertia.get(route('pdv'))" />
+                        <GeneralButton
+                            color="primary"
+                            icon="fa-plus"
+                            button-text="Nova Venda"
+                            @click="$inertia.get(route('pdv'))"
+                        />
                     </VCol>
                 </VRow>
-                <VDataTableServer :items-length="users.length" density="comfortable"
-                    no-data-text="Nenhuma  venda foi encontrada" :items="users" :headers="headers"
-                    items-per-page-text="Linhas por página" show-current-page
-                    :items-per-page-options="itemsPerPageOptions">
+                <VDataTableServer
+                    :items-length="users.length"
+                    density="comfortable"
+                    no-data-text="Nenhuma  venda foi encontrada"
+                    :items="users"
+                    :headers="headers"
+                    items-per-page-text="Linhas por página"
+                    show-current-page
+                    :items-per-page-options="itemsPerPageOptions"
+                >
                     <template #item.actions="{ item, index }">
                         <div class="gap-2 d-flex">
-                            <!-- <GeneralButton color="primary" icon="fa-pencil" size="35"
-                                @click="$inertia.get(route('employee.edit', item.id))" />
-                            <GeneralButton color="red" icon="fa-trash" size="35" @click="deleteEmployee(item.id, index)"
-                                :loading="loadingId === item.id" /> -->
+                            <GeneralButton
+                                color="primary"
+                                icon="fa-eye"
+                                size="35"
+                                @click="modalOrderItems(item)"
+                            />
                         </div>
                     </template>
 
@@ -196,5 +178,37 @@ const searchOrders = () => {
                 </VDataTableServer>
             </VCardText>
         </VCard>
+        <VDialog v-model="modal" max-width="800px">
+            <VCard>
+                <VCardText>
+                    <VDataTableServer
+                        :items-length="users.length"
+                        density="comfortable"
+                        no-data-text="Nenhum item foi encontrado"
+                        :items="orderItems"
+                        :headers="[
+                            {
+                                title: 'Produto',
+                                key: 'product.name',
+                                sortable: false,
+                            },
+                            {
+                                title: 'Quantidade',
+                                key: 'quantity',
+                                sortable: false,
+                            },
+                            {
+                                title: 'Preço Unitário',
+                                key: 'unit_price',
+                                sortable: false,
+                            },
+                        ]"
+                        items-per-page-text="Linhas por página"
+                        show-current-page
+                        :items-per-page-options="itemsPerPageOptions"
+                    />
+                </VCardText>
+            </VCard>
+        </VDialog>
     </AuthenticatedLayout>
 </template>

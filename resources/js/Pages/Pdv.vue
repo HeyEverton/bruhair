@@ -4,12 +4,13 @@ import { Head, useForm } from "@inertiajs/vue3";
 import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import TextInput from "@/Components/TextInput.vue";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import Select from "@/Components/Select.vue";
 import { IUser } from "./types/user-customer-employee";
 import { IProduct, IProductItem } from "./types/product";
 import GeneralButton from "../Components/GeneralButton.vue";
 import { useSweetAlert } from "@/composables/useSweetAlert";
+import FontAwesomeIcon from "@/Components/FontAwesomeIcon.vue";
 
 interface Props {
     products: IProduct[];
@@ -83,17 +84,14 @@ const create = () => {
 const addProduct = () => {
     if (form.selected_product) {
         form.items.push({
-            // @ts-expect-error ...
             product_id: form.selected_product.id,
             name: form.selected_product.name,
-            // @ts-expect-error ...
             formatted_price: form.selected_product.price_formatted,
             quantity: 1,
             avg_price: form.selected_product.avg_price,
         });
         form.selected_product = {};
-
-        // updateTotal();
+        updateTotal();
     }
 };
 
@@ -101,14 +99,11 @@ const removeProduct = (index: number) => {
     form.items.splice(index, 1);
     updateTotal();
 };
-
 const updateTotal = () => {
-    form.selected_product = {};
-    let total = form.items.reduce((sum, product) => {
-        return sum + product.avg_price;
+    let total = form.items.reduce((sum, item) => {
+        return sum + item.avg_price * item.quantity;
     }, 0);
-    console.log(total);
-    // form.total = `R$ ${total.toFixed(2)}`;
+    form.total = `R$ ${total.toFixed(2)}`;
 };
 </script>
 
@@ -244,7 +239,40 @@ const updateTotal = () => {
                                         {{ product.formatted_price }}
                                     </td>
                                     <td class="border px-4 py-2">
+                                        <VBtn
+                                            icon
+                                            color="primary"
+                                            size="25"
+                                            rounded=""
+                                            class="mr-2"
+                                            :disabled="product.quantity <= 1"
+                                            @click="
+                                                () => {
+                                                    if (product.quantity > 1) {
+                                                        product.quantity--;
+                                                        updateTotal();
+                                                    }
+                                                }
+                                            "
+                                        >
+                                            <FontAwesomeIcon icon="fa-minus" />
+                                        </VBtn>
                                         {{ product.quantity }}
+                                        <VBtn
+                                            icon
+                                            color="primary"
+                                            size="25"
+                                            rounded=""
+                                            @click="
+                                                () => {
+                                                    product.quantity++;
+                                                    updateTotal();
+                                                }
+                                            "
+                                            class="ml-2"
+                                        >
+                                            <FontAwesomeIcon icon="fa-plus" />
+                                        </VBtn>
                                     </td>
                                     <td class="border px-4 py-2">
                                         {{
