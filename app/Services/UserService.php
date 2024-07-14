@@ -30,4 +30,14 @@ class UserService extends BaseService
             ->where('role', UserRole::EMPLOYEE->value)
             ->get();
     }
+
+    public function show(string | int $id)
+    {
+        return $this->user->with([
+            'orders',
+            'orders.items',
+            'orders.customer',
+            'orders.items.product',
+        ])->find($id);
+    }
 }

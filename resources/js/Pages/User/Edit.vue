@@ -8,11 +8,14 @@ import { useSweetAlert } from "@/composables/useSweetAlert";
 import { Head, useForm } from "@inertiajs/vue3";
 import InputError from "@/Components/InputError.vue";
 import { IUser } from "../types/user-customer-employee";
+import { ref } from "vue";
+import { IProductItem } from "../types/product";
 interface Props {
     user: IUser;
 }
 
 const props = defineProps<Props>();
+const employeeSalesModal = ref<boolean>(false);
 
 const form = useForm({
     name: props.user.name,
@@ -23,6 +26,34 @@ const form = useForm({
 });
 
 const { showAlert } = useSweetAlert();
+
+const headers = [
+    {
+        title: "Cliente",
+        key: "customer.name",
+        sortable: true,
+    },
+    {
+        title: "Profissional",
+        key: "employee.name",
+        sortable: true,
+    },
+    {
+        title: "Total",
+        key: "formatted_total",
+        sortable: true,
+    },
+    {
+        title: "Data",
+        key: "formatted_date",
+        sortable: true,
+    },
+    {
+        title: "Ações",
+        key: "actions",
+        sortable: false,
+    },
+];
 
 const edit = () => {
     form.put(route("employee.edit", { id: props.user.id }), {
@@ -36,8 +67,11 @@ const edit = () => {
     });
 };
 
-const reset = () => {
-    // form.reset();
+const modal = ref(false);
+const orderItems = ref<IProductItem[]>([]);
+const modalOrderItems = (order: any) => {
+    modal.value = true;
+    orderItems.value = order.items;
 };
 </script>
 
@@ -58,7 +92,85 @@ const reset = () => {
                 />
             </div>
         </template>
+        <div class="w-full md:w-1/2 px-3 mb-1 md:mb-0 mt-4">
+            <GeneralButton
+                color="primary"
+                icon="fa-brazilian-real-sign"
+                button-text="Ver Vendas do Funcionário"
+                class="mt-2 mr-2"
+                @click="employeeSalesModal = true"
+            />
+        </div>
 
+        <VDialog v-model="employeeSalesModal">
+            <VCard>
+                <VCardTitle>
+                    Vendas do funcionário:
+                    <strong>{{ props.user.name }}</strong>
+                </VCardTitle>
+                <VCardText>
+                    <VDataTableServer
+                        :items-length="props.user.orders.length"
+                        density="comfortable"
+                        no-data-text="Nenhuma  venda foi encontrada"
+                        :items="props.user.orders"
+                        :headers="headers"
+                        items-per-page-text="Linhas por página"
+                        show-current-page
+                    >
+                        <template #item.actions="{ item, index }">
+                            <div class="gap-2 d-flex">
+                                <GeneralButton
+                                    color="primary"
+                                    icon="fa-eye"
+                                    size="35"
+                                    @click="modalOrderItems(item)"
+                                />
+                            </div>
+                        </template>
+
+                        <template #bottom> </template>
+                    </VDataTableServer>
+                </VCardText>
+            </VCard>
+
+            <VDialog v-model="modal" max-width="600">
+                <VCard>
+                    <VCardTitle>
+                        Itens da Venda
+                    </VCardTitle>
+                    <VCardText>
+                        <VDataTableServer
+                            :items-length="orderItems"
+                            density="compact"
+                            no-data-text="Nenhum item foi encontrado"
+                            :items="orderItems"
+                            :headers="[
+                                {
+                                    title: 'Produto',
+                                    key: 'product.name',
+                                    sortable: false,
+                                },
+                                {
+                                    title: 'Quantidade',
+                                    key: 'quantity',
+                                    sortable: false,
+                                },
+                                {
+                                    title: 'Preço Unitário',
+                                    key: 'unit_price',
+                                    sortable: false,
+                                },
+                            ]"
+                            items-per-page-text="Linhas por página"
+                            show-current-page
+                        >
+                        <template #bottom> </template>
+                    </VDataTableServer>
+                    </VCardText>
+                </VCard>
+            </VDialog>
+        </VDialog>
         <VCardText>
             <form @submit.prevent="edit">
                 <div class="flex flex-wrap -mx-3 mb-6">

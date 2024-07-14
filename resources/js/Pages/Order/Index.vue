@@ -107,7 +107,6 @@ const searchOrders = () => {
 const modal = ref(false);
 const orderItems = ref<IProductItem[]>([]);
 const modalOrderItems = (order: any) => {
-    console.log(order);
     modal.value = true;
     orderItems.value = order.items;
 };
@@ -182,7 +181,7 @@ const modalOrderItems = (order: any) => {
             <VCard>
                 <VCardText>
                     <VDataTableServer
-                        :items-length="users.length"
+                        :items-length="orderItems.length"
                         density="comfortable"
                         no-data-text="Nenhum item foi encontrado"
                         :items="orderItems"
