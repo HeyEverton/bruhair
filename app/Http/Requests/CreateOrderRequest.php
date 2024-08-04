@@ -26,10 +26,6 @@ class CreateOrderRequest extends FormRequest
                 'required',
                 'exists:users,id',
             ],
-            'product_id' => [
-                'required',
-                'exists:products,id'
-            ],
             'total' => [
                 'required',
             ],
@@ -44,6 +40,20 @@ class CreateOrderRequest extends FormRequest
                     PaymentType::PIX->value,
                     PaymentType::CASH->value,
                 ]),
+            ],
+            'items' => [
+                'required',
+                'array',
+                'min:1',
+            ],
+            'items.*.product_id' => [
+                'required',
+                'exists:products,id',
+            ],
+            'items.*.quantity' => [
+                'required',
+                'integer',
+                'min:1',
             ],
         ];
     }

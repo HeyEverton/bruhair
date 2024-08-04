@@ -5,12 +5,15 @@ namespace App\Services;
 use Carbon\Carbon;
 use App\Base\BaseService;
 use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\Product;
 use Illuminate\Http\Response;
 
 class OrderService extends BaseService
 {
-    public function __construct(private Order $order)
-    {
+    public function __construct(
+        private Order $order
+    ) {
         parent::__construct($order);
     }
 
@@ -20,7 +23,8 @@ class OrderService extends BaseService
             ->with([
                 'employee',
                 'customer',
-                'product',
+                'items',
+                'items.product'
             ])
             ->paginate($options);
     }
@@ -28,10 +32,19 @@ class OrderService extends BaseService
     public function create(array $payload, string $shouldReturnResource = 'no_return'): int | object
     {
         $payload['user_id'] = $payload['employee_id'];
-        $payload['total'] = str_replace(',', '.', $payload['total']);
         $payload['total'] = str_replace('R$', '', $payload['total']);
         $payload['total'] = str_replace(' ', '', $payload['total']);
+
         $order = $this->order->create($payload);
+        foreach ($payload['items'] as $item) {
+            $product = Product::find($item['product_id']);
+            OrderItem::create([
+                'order_id' => $order->id,
+                'quantity' => $item['quantity'],
+                'product_id' => $item['product_id'],
+                'unit_price' => $product->avg_price,
+            ]);
+        }
         if ($shouldReturnResource === 'return_resource') {
             return $order;
         }

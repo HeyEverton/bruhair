@@ -34,7 +34,7 @@ class BaseService
         $record->update($payload);
     }
 
-    public function show(string $id)
+    public function show(string | int  $id)
     {
         $record = $this->model->find($id);
 
