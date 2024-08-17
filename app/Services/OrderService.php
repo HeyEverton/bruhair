@@ -59,7 +59,8 @@ class OrderService extends BaseService
             'data' => $query->with([
                 'employee',
                 'customer',
-                'product',
+                'items',
+                'items.product'
             ])
                 ->orderBy('created_at', 'DESC')
                 ->get()
